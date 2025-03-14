@@ -10,7 +10,7 @@ public class TwitterETL {
 
     public static void main(String[] args) {
         // Replace with your actual Bearer Token
-        String bearerToken = "AAAAAAAAAAAAAAAAAAAAAP%2BqzwEAAAAAnMPWANQk4k%2FZW6dOaGfRuV9eFZ8%3DQ1H5wEMNBeL7QVagx0keUG3pVbsxZFgLnQUBelpfeCpwNTlCis";
+        String bearerToken = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
         // Initialize Twitter Client
         TwitterClient twitterClient = new TwitterClient(TwitterClient.OBJECT_MAPPER, bearerToken);

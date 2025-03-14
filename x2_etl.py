@@ -5,7 +5,7 @@ from datetime import datetime
 import s3fs
 
 # Replace with your actual Bearer Token (from Twitter Developer Portal)
-bearer_token = "AAAAAAAAAAAAAAAAAAAAAP%2BqzwEAAAAAnMPWANQk4k%2FZW6dOaGfRuV9eFZ8%3DQ1H5wEMNBeL7QVagx0keUG3pVbsxZFgLnQUBelpfeCpwNTlCis"
+bearer_token = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # Initialize Tweepy Client (API v2)
 client = tweepy.Client(bearer_token=bearer_token)
