@@ -1,0 +1,167 @@
+###Airflow project for X
+
+##Follow the below steps:
+
+1. Create developer account and project on X https://developer.x.com/en/portal/dashboard
+
+2. Generate all required keys and tokens, then save them.
+
+3. install python 3
+
+4. Install pip3
+
+5. Run the below commands:
+
+pip3 install pandas
+
+pip3 install tweepy
+
+pip3 install s3fs
+
+6. Generate an expected output of tweets, retweets and likes with timestamp for the targetted user (Python or java)
+
+#Python
+
+
+import tweepy
+import pandas as pd
+import os
+from datetime import datetime
+
+# Replace with your actual Bearer Token
+bearer_token = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxs"
+        P
+# Initialize Tweepy Client (API v2)
+client = tweepy.Client(bearer_token=bearer_token)
+
+# Get user ID from username
+username = "fisherwayy"
+user = client.get_user(username=username, user_fields=["id", "name", "username"])
+
+if user.data is None:
+    print("❌ User not found.")
+    exit()
+
+user_id = user.data.id
+
+# Fetch tweets with user expansion
+tweets = client.get_users_tweets(
+    id=user_id,
+    max_results=100,
+    tweet_fields=["created_at", "public_metrics"]
+)
+
+# Create output folder
+output_folder = "./twitter_data/"
+os.makedirs(output_folder, exist_ok=True)
+
+# Process tweets
+tweet_data = []
+if tweets.data:
+    for tweet in tweets.data:
+        refined_tweet = {
+            "user": username,
+            "text": tweet.text,
+            "favorite_count": tweet.public_metrics["like_count"],
+            "retweet_count": tweet.public_metrics["retweet_count"],
+            "created_at": tweet.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        tweet_data.append(refined_tweet)
+
+    # Convert to DataFrame
+    df = pd.DataFrame(tweet_data)
+
+    # Define CSV file path
+    csv_filename = f"{output_folder}tweets_{username}.csv"
+
+    # Save to CSV
+    df.to_csv(csv_filename, index=False)
+    print(f"✅ CSV file saved at: {csv_filename}")
+
+else:
+    print("No tweets found.")
+
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+#Java
+
+import com.github.redouane59.twitter.TwitterClient;
+import com.github.redouane59.twitter.dto.tweet.TweetV2;
+import com.github.redouane59.twitter.dto.tweet.TweetV2.TweetData;
+import com.github.redouane59.twitter.dto.user.UserV2;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TwitterETL {
+
+    public static void main(String[] args) {
+        // Replace with your actual Bearer Token
+        String bearerToken = "bearer_token = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxxxxxxs";
+
+        // Initialize Twitter Client
+        TwitterClient twitterClient = new TwitterClient(TwitterClient.OBJECT_MAPPER, bearerToken);
+
+        // Get user information
+        String username = "fisherwayy"; #put your own usename here
+        UserV2 user = twitterClient.getUserFromUsername(username);
+        if (user == null || user.getId() == null) {
+            System.out.println("❌ User not found!");
+            return;
+        }
+        String userId = user.getId();
+
+        // Fetch tweets
+        List<TweetData> tweets = twitterClient.getUserTimeline(userId, 100);
+        if (tweets.isEmpty()) {
+            System.out.println("No tweets found.");
+            return;
+        }
+
+        // Process tweets
+        List<String> tweetData = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        for (TweetData tweet : tweets) {
+            String formattedTweet = String.format(
+                "User: %s | Text: %s | Likes: %d | Retweets: %d | Created At: %s",
+                username,
+                tweet.getText(),
+                tweet.getPublicMetrics().getLikeCount(),
+                tweet.getPublicMetrics().getRetweetCount(),
+                tweet.getCreatedAt().format(formatter)
+            );
+            tweetData.add(formattedTweet);
+        }
+
+        // Print processed tweets
+        tweetData.forEach(System.out::println);
+    }
+}
+
+
+
+After the above codes runs sucessfuly with the saved CSV file,
+
+
+For the 'Transformation': From AWS deploy EC2 instance with Ubuntu(latest) and SSH into it.
+
+
+7. Run the below command (To prepare the EC2 instance):
+
+
+sudo apt-get update
+
+sudo apt install python3-pip
+
+sudo pip install apache-airflow
+
+sudo pip install pandas
+
+sudo pip install s3fs
+
+sudo pip install tweepy
+
